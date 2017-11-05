@@ -1,0 +1,236 @@
+vagrantfile:
+    target: local
+    vm:
+        provider:
+            local:
+                box: puphpet/ubuntu1604-x64
+                box_url: 'false'
+                box_version: '0'
+                chosen_virtualizer: virtualbox
+                virtualizers:
+                    virtualbox:
+                        modifyvm:
+                            natdnshostresolver1: false
+                        showgui: 0
+                    vmware:
+                        numvcpus: 1
+                    parallels:
+                        linked_clone: 0
+                        check_guest_tools: 0
+                        update_guest_tools: 0
+                machines:
+                    vflm_fp1a3xu5qe0r:
+                        id: machine1
+                        hostname: codingtest.dev
+                        network:
+                            private_network: 192.168.56.101
+                            forwarded_port:
+                                vflmnfp_4h9h3gsnskxd:
+                                    host: '5453'
+                                    guest: '22'
+                        memory: '724'
+                        cpus: '1'
+        provision:
+            puppet:
+                manifests_path: puphpet/puppet/manifests
+                module_path:
+                    - puphpet/puppet/modules
+                    - puphpet/puppet/manifests
+                options:
+                    - '--verbose'
+                    - '--hiera_config /vagrant/puphpet/puppet/hiera.yaml'
+        synced_folder:
+            vflsf_61ulhqeiz11n:
+                owner: www-data
+                group: www-data
+                source: 'E:\\Projects\\CodingTest\\Prob1'
+                target: /var/www/html/codingtest
+                sync_type: default
+                smb:
+                    smb_host: ''
+                    smb_username: ''
+                    smb_password: ''
+                    mount_options:
+                        dir_mode: '0775'
+                        file_mode: '0664'
+                rsync:
+                    args:
+                        - '--verbose'
+                        - '--archive'
+                        - '-z'
+                    exclude:
+                        - .vagrant/
+                        - .git/
+                    auto: 'true'
+        usable_port_range:
+            start: 10200
+            stop: 10500
+        post_up_message: ''
+    ssh:
+        host: 'false'
+        port: 'false'
+        private_key_path: 'false'
+        username: vagrant
+        guest_port: 'false'
+        keep_alive: '1'
+        forward_agent: 'false'
+        forward_x11: 'false'
+        shell: 'bash -l'
+        insert_key: 'false'
+    vagrant:
+        host: detect
+    proxy:
+        http: ''
+        https: ''
+        ftp: ''
+        no_proxy: ''
+server:
+    install: '1'
+    packages:
+        - vim
+        - htop
+users_groups:
+    install: '1'
+    groups: {  }
+    users: {  }
+locale:
+    install: '1'
+    settings:
+        default_locale: pt_PT.UTF-8
+        locales:
+            - en_GB.UTF-8
+            - en_US.UTF-8
+            - pt_PT.UTF-8
+        timezone: UTC
+firewall:
+    install: '1'
+    rules: {  }
+resolv:
+    install: '1'
+    nameservers:
+        - 8.8.8.8
+        - 8.8.4.4
+    domainname: ''
+    searchpath: {  }
+cron:
+    install: '1'
+    jobs: {  }
+apache:
+    install: '1'
+    settings:
+        version: 2.4
+        user: www-data
+        group: www-data
+        default_vhost: true
+        manage_user: false
+        manage_group: false
+        sendfile: 0
+    modules:
+        - proxy_fcgi
+        - rewrite
+    vhosts:
+        av_ezhbn67gux4z:
+            servername: codingtest.dev
+            serveraliases:
+                - www.codingtest.dev
+            docroot: /var/www/html/codingtest
+            port: '80'
+            setenvif:
+                - 'Authorization "(.*)" HTTP_AUTHORIZATION=$1'
+            custom_fragment: ''
+            ssl: '0'
+            ssl_cert: LETSENCRYPT
+            ssl_key: LETSENCRYPT
+            ssl_chain: LETSENCRYPT
+            ssl_certs_dir: LETSENCRYPT
+            ssl_protocol: ''
+            ssl_cipher: ''
+            directories:
+                avd_ypdm19bx67ov:
+                    path: /var/www/codingtest
+                    directoryindex: 'index.php app.dev'
+                    options:
+                        - Indexes
+                        - FollowSymlinks
+                        - MultiViews
+                    allow_override:
+                        - All
+                    require:
+                        - 'all granted'
+                    custom_fragment: ''
+                    provider: directory
+            files_match:
+                avfm_ykd4y734oaek:
+                    path: (app_dev|config)\.php$
+                    sethandler: 'proxy:fcgi://127.0.0.1:9000'
+                    setenv:
+                        - 'APP_ENV dev'
+                    custom_fragment: ''
+                    provider: filesmatch
+                avfm_390ziqild6xa:
+                    path: app\.php$
+                    sethandler: 'proxy:fcgi://127.0.0.1:9000'
+                    setenv:
+                        - 'APP_ENV prod'
+                    custom_fragment: ''
+                    provider: filesmatch
+                avfm_vewrls07g3uf:
+                    path: \.php$
+                    sethandler: 'proxy:fcgi://127.0.0.1:9000'
+                    custom_fragment: ''
+                    provider: filesmatch
+letsencrypt:
+    install: '1'
+    settings:
+        email: ''
+        webserver_service: ''
+    domains: {  }
+php:
+    install: '1'
+    settings:
+        version: '7.1'
+    modules:
+        php:
+            - cli
+            - intl
+            - xml
+        pear: {  }
+        pecl: {  }
+    ini:
+        display_errors: 'On'
+        error_reporting: '-1'
+        session.save_path: /var/lib/php/session
+        date.timezone: UTC
+    fpm_ini:
+        error_log: /var/log/php-fpm.log
+    fpm_pools:
+        phpfp_b3mtrpgibwwj:
+            ini:
+                prefix: www
+                listen: '127.0.0.1:9000'
+                security.limit_extensions: .php
+                user: www-user
+                group: www-data
+    composer: '0'
+    composer_home: ''
+mysql:
+    install: '1'
+    settings:
+        version: '5.7'
+        root_password: '123'
+        override_options: {  }
+    users:
+        mysqlnu_gj678415m77s:
+            name: dbuser
+            password: '123'
+    databases:
+        mysqlnd_d5txt2616fx3:
+            name: dbname
+            sql: ''
+    grants:
+        mysqlng_78uxqnt7iqvw:
+            user: dbuser
+            table: '*.*'
+            privileges:
+                - ALL
+
